@@ -1,0 +1,27 @@
+server:
+  port: ${SERVER_PORT:8081}
+  error:
+    include-message: always
+
+spring:
+  application:
+    name: catalog-service
+  datasource:
+    # database exclusivo deste servico (catalogdb) - o review-service nao acessa aqui
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/catalogdb}
+    username: ${DB_USER:gamelog}
+    password: ${DB_PASSWORD:gamelog}
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
