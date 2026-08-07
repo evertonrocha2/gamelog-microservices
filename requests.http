@@ -1,0 +1,84 @@
+### Todas as chamadas passam pelo API Gateway (porta 8080).
+### Os servicos internos (8081/8082) nunca sao acessados diretamente pelo cliente.
+
+# ============ CATALOG-SERVICE ============
+
+### Listar jogos
+GET http://localhost:8080/api/games
+
+### Buscar jogo por id
+GET http://localhost:8080/api/games/1
+
+### Cadastrar jogo
+POST http://localhost:8080/api/games
+Content-Type: application/json
+
+{
+  "title": "Celeste",
+  "genre": "Plataforma",
+  "platform": "PC",
+  "releaseYear": 2018,
+  "developer": "Extremely OK Games"
+}
+
+### Atualizar jogo
+PUT http://localhost:8080/api/games/1
+Content-Type: application/json
+
+{
+  "title": "The Legend of Zelda: Breath of the Wild",
+  "genre": "Aventura / Mundo aberto",
+  "platform": "Switch",
+  "releaseYear": 2017,
+  "developer": "Nintendo"
+}
+
+### Remover jogo
+DELETE http://localhost:8080/api/games/5
+
+# ============ REVIEW-SERVICE ============
+
+### Listar resenhas
+GET http://localhost:8080/api/reviews
+
+### Resenhas de um jogo
+GET http://localhost:8080/api/reviews/game/2
+
+### Resumo (nota media + total) de um jogo
+GET http://localhost:8080/api/reviews/game/2/summary
+
+### Criar resenha (o review-service valida o jogo no catalog-service)
+POST http://localhost:8080/api/reviews
+Content-Type: application/json
+
+{
+  "gameId": 2,
+  "author": "Everton",
+  "rating": 5,
+  "text": "Dificil na medida certa, mundo aberto impressionante.",
+  "pros": ["exploracao", "chefes marcantes"],
+  "cons": ["curva de aprendizado ingreme"],
+  "platform": "PC",
+  "hoursPlayed": 120
+}
+
+### Criar resenha de jogo inexistente -> 422
+POST http://localhost:8080/api/reviews
+Content-Type: application/json
+
+{
+  "gameId": 999,
+  "author": "Everton",
+  "rating": 3,
+  "text": "esse jogo nao existe no catalogo"
+}
+
+# ============ INFRA ============
+
+### Servicos registrados no Eureka
+GET http://localhost:8761/eureka/apps
+Accept: application/json
+
+### Estado do circuit breaker do review-service
+### (derrube o catalog-service e crie algumas resenhas pra ver o circuito abrir)
+GET http://localhost:8082/actuator/circuitbreakers
