@@ -1,6 +1,6 @@
 # GameLog - Proposta e Arquitetura Inicial de Microservices
 
-**Disciplina:** Microservices - Entrega 1 (TP1)
+**Disciplina:** Microsserviços e DevOps com Spring Boot e Spring Cloud - Entrega 1 (TP1)
 
 ## 1. Identificação
 
@@ -9,6 +9,7 @@
 | Integrante | Everton Rocha |
 | Turma | Segunda e quarta |
 | Modalidade | Individual |
+| Responsável pela organização da entrega | Everton Rocha |
 | Repositório | https://github.com/evertonrocha2/gamelog-microservices |
 
 Por ser um trabalho individual, todos os papéis ficam comigo: Discovery Server, API Gateway, os dois microservices de domínio, os bancos de dados, a documentação e os testes de execução.

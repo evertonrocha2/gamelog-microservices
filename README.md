@@ -2,7 +2,7 @@
 
 Plataforma de catálogo e resenhas de jogos construída com arquitetura de microservices (Spring Boot + Spring Cloud).
 
-Trabalho da disciplina de Microservices - TP1 (Entrega 1).
+Trabalho da disciplina Microsserviços e DevOps com Spring Boot e Spring Cloud - TP1 (Entrega 1).
 
 ## Integrantes
 
