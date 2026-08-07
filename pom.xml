@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>br.edu.infnet</groupId>
+    <artifactId>gamelog</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <name>GameLog</name>
+    <description>Plataforma de catalogo e resenhas de jogos - TP1 de Microservices</description>
+
+    <!-- Pom agregador: serve so pra buildar tudo de uma vez com "mvn clean package".
+         Cada modulo tem seu proprio parent (spring-boot-starter-parent) e roda de forma independente. -->
+    <modules>
+        <module>discovery-server</module>
+        <module>api-gateway</module>
+        <module>catalog-service</module>
+        <module>review-service</module>
+    </modules>
+</project>
