@@ -1,0 +1,29 @@
+# Servicos de apoio (backing services) do projeto.
+# Cada microservice tem seu proprio banco: o catalog-service usa Postgres
+# e o review-service usa Mongo. Nada de banco compartilhado entre servicos.
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: gamelog-postgres
+    environment:
+      POSTGRES_DB: catalogdb
+      POSTGRES_USER: gamelog
+      POSTGRES_PASSWORD: gamelog
+    ports:
+      # 5433 no host pra nao brigar com um Postgres local que ja esteja rodando
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  mongodb:
+    image: mongo:7
+    container_name: gamelog-mongo
+    ports:
+      # mesma ideia do Postgres: 27018 evita conflito com Mongo local
+      - "27018:27017"
+    volumes:
+      - mongodata:/data/db
+
+volumes:
+  pgdata:
+  mongodata:
