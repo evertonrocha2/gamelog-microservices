@@ -10,8 +10,9 @@ services:
       POSTGRES_USER: gamelog
       POSTGRES_PASSWORD: gamelog
     ports:
-      # 5433 no host pra nao brigar com um Postgres local que ja esteja rodando
-      - "5433:5432"
+      # 5433 no host pra nao brigar com um Postgres local que ja esteja rodando.
+      # Amarrado ao loopback: so este computador enxerga o banco, ninguem da rede.
+      - "127.0.0.1:5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
@@ -19,8 +20,8 @@ services:
     image: mongo:7
     container_name: gamelog-mongo
     ports:
-      # mesma ideia do Postgres: 27018 evita conflito com Mongo local
-      - "27018:27017"
+      # mesma ideia do Postgres: 27018 evita conflito e loopback evita exposicao na rede
+      - "127.0.0.1:27018:27017"
     volumes:
       - mongodata:/data/db
 
