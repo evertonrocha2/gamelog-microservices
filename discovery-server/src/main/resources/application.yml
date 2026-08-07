@@ -1,0 +1,12 @@
+server:
+  port: ${SERVER_PORT:8761}
+
+spring:
+  application:
+    name: discovery-server
+
+eureka:
+  client:
+    # O proprio Eureka nao precisa se registrar nem buscar registro de ninguem
+    register-with-eureka: false
+    fetch-registry: false
