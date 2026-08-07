@@ -1,0 +1,51 @@
+server:
+  port: ${SERVER_PORT:8082}
+  error:
+    include-message: always
+
+spring:
+  application:
+    name: review-service
+  data:
+    mongodb:
+      # database exclusivo deste servico (reviewsdb)
+      uri: ${MONGO_URI:mongodb://localhost:27018/reviewsdb}
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+      client:
+        config:
+          default:
+            # timeout curto: melhor falhar rapido e cair no fallback
+            # do que segurar a requisicao do usuario
+            connectTimeout: 2000
+            readTimeout: 2000
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+        automatic-transition-from-open-to-half-open-enabled: true
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 3s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,circuitbreakers
+  health:
+    circuitbreakers:
+      enabled: true
