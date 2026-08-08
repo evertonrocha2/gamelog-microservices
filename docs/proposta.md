@@ -157,6 +157,28 @@ Detalhe de implementação: o Feign usa `dismiss404`, então "jogo não existe" 
 
 ## 9. Evidências de execução
 
+### Prints
+
+As capturas de tela estão na pasta [print-evidencias](print-evidencias/):
+
+**1. Discovery Server com os três serviços registrados** (dashboard do Eureka em http://localhost:8761, todos UP com suas portas):
+
+![Eureka com os servicos registrados](print-evidencias/01-eureka-servicos-registrados.png)
+
+**2. Rota pelo API Gateway** (GET /api/games na porta 8080 respondendo 200 com o catálogo):
+
+![Lista de jogos via gateway](print-evidencias/02-gateway-lista-jogos.png)
+
+**3. Comunicação entre microservices** (POST /api/reviews via gateway: o review-service consultou o catalog-service, validou o jogo e copiou o título, `gameVerified: true`):
+
+![Resenha criada com jogo verificado](print-evidencias/03-review-criada-via-gateway.png)
+
+**4. Resiliência em ação** (mesma chamada com o catalog-service derrubado: a resenha é aceita com `gameVerified: false`. Repare no tempo de resposta de 2.02s, que é o timeout de 2s do Feign esgotando antes do fallback assumir, contra 324ms da chamada anterior):
+
+![Fallback com o catalogo fora do ar](print-evidencias/04-fallback-catalogo-fora.png)
+
+### Saídas de terminal
+
 Saídas reais capturadas durante a execução local (as chamadas de API passam todas pelo gateway, porta 8080).
 
 **Serviços registrados no Eureka** (`GET http://localhost:8761/eureka/apps`):
