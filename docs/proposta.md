@@ -118,7 +118,7 @@ Não existe base compartilhada. Quando o review-service precisa de dado do catá
 
 4. **Agregações.** O resumo por jogo (nota média, contagem) mapeia direto pro aggregation framework do Mongo quando o volume crescer.
 
-Já o **catalog-service ficou no PostgreSQL** porque jogo é dado tabular clássico: campos fixos, integridade forte, atualizações pontuais. É o caso em que o relacional é a escolha certa. O projeto pratica, assim, persistência poliglota: cada serviço com o banco que combina com a sua carga.
+Já o **catalog-service ficou no PostgreSQL** porque jogo é dado tabular clássico: campos fixos, integridade forte, atualizações pontuais. É o caso em que o relacional é a escolha certa. No fim, o projeto acaba usando persistência poliglota: cada serviço com o banco que combina com a carga dele.
 
 (Redis como cache ficou fora desta entrega de propósito; a análise de banco não relacional acima é sobre persistência principal, como o enunciado pede.)
 

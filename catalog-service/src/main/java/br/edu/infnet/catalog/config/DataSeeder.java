@@ -6,10 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * Carga inicial so pra facilitar os testes da entrega.
- * Roda uma vez, se a tabela estiver vazia.
- */
+// carga inicial pra nao comecar com o catalogo vazio
 @Configuration
 public class DataSeeder {
 

@@ -8,7 +8,6 @@ spring:
     name: review-service
   data:
     mongodb:
-      # database exclusivo deste servico (reviewsdb)
       uri: ${MONGO_URI:mongodb://localhost:27018/reviewsdb}
   cloud:
     openfeign:
@@ -17,8 +16,7 @@ spring:
       client:
         config:
           default:
-            # timeout curto: melhor falhar rapido e cair no fallback
-            # do que segurar a requisicao do usuario
+            # falhar rapido e deixar o fallback assumir
             connectTimeout: 2000
             readTimeout: 2000
 

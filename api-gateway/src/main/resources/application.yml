@@ -7,7 +7,7 @@ spring:
   cloud:
     gateway:
       routes:
-        # lb:// = load balanced via Eureka, resolve pelo nome logico do servico
+        # lb:// resolve o nome do servico via eureka
         - id: catalog-service
           uri: lb://catalog-service
           predicates:

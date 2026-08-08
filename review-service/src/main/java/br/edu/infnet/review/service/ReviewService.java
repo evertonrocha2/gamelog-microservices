@@ -26,9 +26,7 @@ public class ReviewService {
     public Review create(ReviewRequest request) {
         GameSummary game = catalogClient.getGame(request.gameId());
 
-        // Jogo inexistente: com dismiss404 o Feign nao estoura excecao no 404,
-        // ele tenta decodificar o corpo do erro e acaba devolvendo um objeto
-        // com os campos nulos. Entao id nulo (ou resposta nula) = jogo nao existe.
+        // no 404 o feign (dismiss404) devolve um objeto com tudo nulo em vez de excecao
         if (game == null || (!game.isUnavailable() && game.id() == null)) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                     "Jogo " + request.gameId() + " nao existe no catalogo");
@@ -46,8 +44,7 @@ public class ReviewService {
         review.setCreatedAt(Instant.now());
 
         if (game.isUnavailable()) {
-            // catalogo fora do ar: aceita a resenha mesmo assim (degradacao),
-            // mas marca que o jogo nao foi verificado ainda
+            // catalogo fora: aceita mesmo assim, so marca como nao verificado
             review.setGameVerified(false);
         } else {
             review.setGameTitle(game.title());

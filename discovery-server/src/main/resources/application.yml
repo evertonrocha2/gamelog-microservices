@@ -7,6 +7,6 @@ spring:
 
 eureka:
   client:
-    # O proprio Eureka nao precisa se registrar nem buscar registro de ninguem
+    # o eureka nao registra a si mesmo
     register-with-eureka: false
     fetch-registry: false

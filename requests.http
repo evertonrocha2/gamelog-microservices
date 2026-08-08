@@ -1,5 +1,4 @@
-### Todas as chamadas passam pelo API Gateway (porta 8080).
-### Os servicos internos (8081/8082) nunca sao acessados diretamente pelo cliente.
+# todas as chamadas passam pelo gateway (8080)
 
 # ============ CATALOG-SERVICE ============
 

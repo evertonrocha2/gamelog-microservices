@@ -5,11 +5,6 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-/**
- * Resenha de um jogo. Documento do Mongo de proposito:
- * cada resenha pode ter campos opcionais (pros, contras, horas jogadas)
- * sem a gente precisar mexer em schema toda vez que algo novo aparecer.
- */
 @Document(collection = "reviews")
 public class Review {
 
@@ -18,8 +13,7 @@ public class Review {
 
     private Long gameId;
 
-    // titulo copiado do catalogo na hora do cadastro.
-    // se o catalogo estiver fora do ar, fica nulo e gameVerified = false
+    // copiado do catalogo no cadastro; fica nulo se o catalogo estiver fora
     private String gameTitle;
     private boolean gameVerified;
 

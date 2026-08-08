@@ -16,10 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * O caminho ja inclui /api/games porque o gateway repassa a rota
- * inteira, sem reescrever o path.
- */
+// o path ja inclui /api/games pq o gateway repassa a rota sem reescrever
 @RestController
 @RequestMapping("/api/games")
 public class GameController {

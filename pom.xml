@@ -12,8 +12,7 @@
     <name>GameLog</name>
     <description>Plataforma de catalogo e resenhas de jogos - TP1 de Microservices</description>
 
-    <!-- Pom agregador: serve so pra buildar tudo de uma vez com "mvn clean package".
-         Cada modulo tem seu proprio parent (spring-boot-starter-parent) e roda de forma independente. -->
+    <!-- agregador, so pra buildar tudo de uma vez -->
     <modules>
         <module>discovery-server</module>
         <module>api-gateway</module>

@@ -4,12 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-/**
- * Fallback acionado quando a chamada ao catalogo falha
- * (timeout, servico fora do ar ou circuito aberto).
- * Nao decide nada aqui: so devolve o marcador e deixa o
- * ReviewService escolher como degradar.
- */
+// entra em acao quando o catalogo falha (timeout, fora do ar, circuito aberto)
 @Component
 public class CatalogClientFallback implements CatalogClient {
 
