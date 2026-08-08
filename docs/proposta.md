@@ -7,7 +7,7 @@
 | Item | Valor |
 |---|---|
 | Integrante | Everton Rocha |
-| Turma | Segunda e quarta |
+| Turma | GRLENGR2C2-N2-L1 |
 | Modalidade | Individual |
 | Responsável pela organização da entrega | Everton Rocha |
 | Repositório | https://github.com/evertonrocha2/gamelog-microservices |
