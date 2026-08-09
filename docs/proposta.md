@@ -6,19 +6,19 @@
 
 | Item | Valor |
 |---|---|
-| Integrante | Everton Rocha |
+| Integrante | Everton da Rocha Silva |
 | Turma | GRLENGR2C2-N2-L1 |
 | Modalidade | Individual |
-| Responsável pela organização da entrega | Everton Rocha |
+| Responsável pela organização da entrega | Everton da Rocha Silva |
 | Repositório | https://github.com/evertonrocha2/gamelog-microservices |
 
 Por ser um trabalho individual, todos os papéis ficam comigo: Discovery Server, API Gateway, os dois microservices de domínio, os bancos de dados, a documentação e os testes de execução.
 
 | Integrante | Microservices sob responsabilidade | Banco |
 |---|---|---|
-| Everton Rocha | catalog-service | PostgreSQL |
-| Everton Rocha | review-service | MongoDB |
-| Everton Rocha | discovery-server, api-gateway | - |
+| Everton da Rocha Silva | catalog-service | PostgreSQL |
+| Everton da Rocha Silva | review-service | MongoDB |
+| Everton da Rocha Silva | discovery-server, api-gateway | - |
 
 ## 2. Tema e problema
 

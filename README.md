@@ -6,7 +6,7 @@ Trabalho da disciplina Microsserviços e DevOps com Spring Boot e Spring Cloud -
 
 ## Integrantes
 
-- Everton Rocha (trabalho individual, turma GRLENGR2C2-N2-L1)
+- Everton da Rocha Silva (trabalho individual, turma GRLENGR2C2-N2-L1)
 
 Por ser individual, todos os componentes (Discovery Server, API Gateway, microservices, bancos e documentação) são de minha responsabilidade.
 
