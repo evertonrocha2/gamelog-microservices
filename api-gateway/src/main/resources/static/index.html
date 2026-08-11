@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameLog</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f4f4f5;
+      color: #27272a;
+      padding: 24px;
+    }
+    h1 { margin-bottom: 4px; }
+    .sub { color: #71717a; margin-bottom: 24px; font-size: 14px; }
+    .wrap { display: flex; gap: 24px; flex-wrap: wrap; }
+    .col { flex: 1; min-width: 320px; }
+    .card {
+      background: #fff;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .game { cursor: pointer; }
+    .game:hover { border-color: #a1a1aa; }
+    .game.ativo { border-color: #2563eb; border-width: 2px; }
+    .game h3 { font-size: 16px; }
+    .game p { font-size: 13px; color: #71717a; margin-top: 4px; }
+    .resenha .autor { font-weight: 600; font-size: 14px; }
+    .resenha .nota { color: #ca8a04; }
+    .resenha .texto { font-size: 14px; margin-top: 6px; }
+    .selo {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .selo.ok { background: #dcfce7; color: #166534; }
+    .selo.pendente { background: #fef9c3; color: #854d0e; }
+    .resumo { font-size: 14px; color: #52525b; margin-bottom: 12px; }
+    form label { display: block; font-size: 13px; margin: 10px 0 4px; }
+    form input, form select, form textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #d4d4d8;
+      border-radius: 6px;
+      font: inherit;
+    }
+    form textarea { resize: vertical; min-height: 70px; }
+    button {
+      margin-top: 14px;
+      padding: 8px 20px;
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font: inherit;
+      cursor: pointer;
+    }
+    button:hover { background: #1d4ed8; }
+    .msg { font-size: 13px; margin-top: 10px; }
+    .msg.erro { color: #b91c1c; }
+    .msg.sucesso { color: #15803d; }
+    .vazio { color: #a1a1aa; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h1>GameLog</h1>
+  <p class="sub">catálogo e resenhas de jogos - tudo passando pelo API Gateway (porta 8080)</p>
+
+  <div class="wrap">
+    <div class="col">
+      <h2>Jogos</h2>
+      <p class="sub">catalog-service / PostgreSQL</p>
+      <div id="lista-jogos"><p class="vazio">carregando...</p></div>
+    </div>
+
+    <div class="col">
+      <h2 id="titulo-resenhas">Resenhas</h2>
+      <p class="sub">review-service / MongoDB</p>
+      <div id="resumo" class="resumo"></div>
+      <div id="lista-resenhas"><p class="vazio">selecione um jogo ao lado</p></div>
+
+      <div class="card" id="form-card" style="display:none">
+        <h3>Nova resenha</h3>
+        <form id="form-resenha">
+          <label>Seu nome</label>
+          <input type="text" id="autor" required>
+          <label>Nota</label>
+          <select id="nota">
+            <option value="5">5 - Obra prima</option>
+            <option value="4">4 - Muito bom</option>
+            <option value="3" selected>3 - Ok</option>
+            <option value="2">2 - Fraco</option>
+            <option value="1">1 - Ruim</option>
+          </select>
+          <label>Resenha</label>
+          <textarea id="texto" required></textarea>
+          <button type="submit">Publicar</button>
+          <div id="msg" class="msg"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let jogoSelecionado = null;
+
+    async function carregarJogos() {
+      const div = document.getElementById('lista-jogos');
+      try {
+        const jogos = await fetch('/api/games').then(r => r.json());
+        div.innerHTML = '';
+        jogos.forEach(j => {
+          const card = document.createElement('div');
+          card.className = 'card game';
+          card.innerHTML = `<h3>${j.title}</h3><p>${j.genre ?? ''} · ${j.platform ?? ''} · ${j.releaseYear ?? ''}</p>`;
+          card.onclick = () => selecionarJogo(j, card);
+          div.appendChild(card);
+        });
+      } catch (e) {
+        div.innerHTML = '<p class="vazio">catálogo indisponível no momento</p>';
+      }
+    }
+
+    function selecionarJogo(jogo, card) {
+      jogoSelecionado = jogo;
+      document.querySelectorAll('.game').forEach(c => c.classList.remove('ativo'));
+      card.classList.add('ativo');
+      document.getElementById('titulo-resenhas').textContent = 'Resenhas de ' + jogo.title;
+      document.getElementById('form-card').style.display = 'block';
+      carregarResenhas();
+    }
+
+    async function carregarResenhas() {
+      const div = document.getElementById('lista-resenhas');
+      const resumoDiv = document.getElementById('resumo');
+      const [resenhas, resumo] = await Promise.all([
+        fetch(`/api/reviews/game/${jogoSelecionado.id}`).then(r => r.json()),
+        fetch(`/api/reviews/game/${jogoSelecionado.id}/summary`).then(r => r.json())
+      ]);
+
+      resumoDiv.textContent = resumo.totalReviews > 0
+        ? `nota média ${resumo.averageRating} (${resumo.totalReviews} resenha${resumo.totalReviews > 1 ? 's' : ''})`
+        : '';
+
+      if (resenhas.length === 0) {
+        div.innerHTML = '<p class="vazio">nenhuma resenha ainda, seja o primeiro</p>';
+        return;
+      }
+
+      div.innerHTML = '';
+      resenhas.forEach(r => {
+        const selo = r.gameVerified
+          ? '<span class="selo ok">verificada</span>'
+          : '<span class="selo pendente">jogo não verificado</span>';
+        const card = document.createElement('div');
+        card.className = 'card resenha';
+        card.innerHTML = `
+          <span class="autor">${r.author}</span>
+          <span class="nota">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span>
+          ${selo}
+          <p class="texto">${r.text}</p>`;
+        div.appendChild(card);
+      });
+    }
+
+    document.getElementById('form-resenha').onsubmit = async (ev) => {
+      ev.preventDefault();
+      const msg = document.getElementById('msg');
+      msg.textContent = '';
+      const resp = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          gameId: jogoSelecionado.id,
+          author: document.getElementById('autor').value,
+          rating: Number(document.getElementById('nota').value),
+          text: document.getElementById('texto').value
+        })
+      });
+      if (resp.ok) {
+        const criada = await resp.json();
+        msg.className = 'msg sucesso';
+        // se o catalogo estiver fora do ar, a resenha entra sem verificacao (fallback)
+        msg.textContent = criada.gameVerified
+          ? 'resenha publicada!'
+          : 'resenha publicada, mas o catálogo está fora do ar (será verificada depois)';
+        ev.target.reset();
+        carregarResenhas();
+      } else {
+        const erro = await resp.json().catch(() => ({}));
+        msg.className = 'msg erro';
+        msg.textContent = erro.message ?? 'erro ao publicar (' + resp.status + ')';
+      }
+    };
+
+    carregarJogos();
+  </script>
+</body>
+</html>
