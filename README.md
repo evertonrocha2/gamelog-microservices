@@ -127,6 +127,12 @@ Rotas configuradas (`api-gateway/src/main/resources/application.yml`):
 | `/api/games/**` | `lb://catalog-service` |
 | `/api/reviews/**` | `lb://review-service` |
 
+## Mini frontend
+
+O gateway também serve uma página estática em **http://localhost:8080**: um mini frontend em HTML/JS puro pra ver os serviços conversando. Ele lista os jogos (catalog-service), mostra as resenhas com a nota média (review-service) e publica resenha nova. A página sai do próprio gateway, então as chamadas usam a mesma origem e passam pelo roteamento normal (sem CORS e sem expor porta interna).
+
+Cada resenha aparece com um selo: "verificada" (o catálogo confirmou o jogo) ou "jogo não verificado" (a resenha foi criada enquanto o catalog-service estava fora do ar). Ou seja, dá pra ver o fallback funcionando direto na interface: derruba o catálogo, publica uma resenha e o selo amarelo aparece.
+
 ## Endpoints
 
 ### catalog-service (via gateway)

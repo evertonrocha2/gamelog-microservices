@@ -135,6 +135,8 @@ Já o **catalog-service ficou no PostgreSQL** porque jogo é dado tabular cláss
 
 O `lb://` integra o gateway ao Eureka com balanceamento de carga. O cliente só conhece a porta 8080.
 
+O gateway também serve um mini frontend estático em http://localhost:8080 (HTML/JS puro, sem serviço novo): lista os jogos, mostra resenhas com nota média e publica resenha nova, tudo consumindo a API pela própria porta do gateway. Cada resenha exibe um selo de verificação, então o fallback da seção 8 fica visível na interface quando o catálogo está fora do ar.
+
 ## 8. Resiliência entre microservices
 
 **Comunicação protegida:** `review-service` → `catalog-service` (validação do jogo ao criar resenha).
