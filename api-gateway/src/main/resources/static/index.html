@@ -117,7 +117,11 @@
         jogos.forEach(j => {
           const card = document.createElement('div');
           card.className = 'card game';
-          card.innerHTML = `<h3>${j.title}</h3><p>${j.genre ?? ''} · ${j.platform ?? ''} · ${j.releaseYear ?? ''}</p>`;
+          const nome = document.createElement('h3');
+          nome.textContent = j.title;
+          const detalhes = document.createElement('p');
+          detalhes.textContent = [j.genre, j.platform, j.releaseYear].filter(Boolean).join(' · ');
+          card.append(nome, detalhes);
           card.onclick = () => selecionarJogo(j, card);
           div.appendChild(card);
         });
@@ -154,16 +158,27 @@
 
       div.innerHTML = '';
       resenhas.forEach(r => {
-        const selo = r.gameVerified
-          ? '<span class="selo ok">verificada</span>'
-          : '<span class="selo pendente">jogo não verificado</span>';
         const card = document.createElement('div');
         card.className = 'card resenha';
-        card.innerHTML = `
-          <span class="autor">${r.author}</span>
-          <span class="nota">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span>
-          ${selo}
-          <p class="texto">${r.text}</p>`;
+
+        const autor = document.createElement('span');
+        autor.className = 'autor';
+        autor.textContent = r.author;
+
+        const nota = document.createElement('span');
+        nota.className = 'nota';
+        nota.textContent = ' ' + '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating) + ' ';
+
+        const selo = document.createElement('span');
+        selo.className = r.gameVerified ? 'selo ok' : 'selo pendente';
+        selo.textContent = r.gameVerified ? 'verificada' : 'jogo não verificado';
+
+        const texto = document.createElement('p');
+        texto.className = 'texto';
+        texto.textContent = r.text;
+
+        // textContent pra nao renderizar html que venha no texto da resenha
+        card.append(autor, nota, selo, texto);
         div.appendChild(card);
       });
     }
