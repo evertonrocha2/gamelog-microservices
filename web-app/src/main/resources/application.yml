@@ -1,0 +1,17 @@
+server:
+  port: ${SERVER_PORT:8083}
+
+spring:
+  application:
+    name: web-app
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
