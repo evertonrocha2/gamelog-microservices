@@ -24,24 +24,24 @@ Separar os dois permite escalar e evoluir cada um no seu ritmo, com o banco cert
 ## Arquitetura
 
 ```
-                         ┌─────────────────────┐
-        cliente ────────►│     api-gateway     │
-                         │       :8080         │
-                         └─────┬──────────┬────┘
-                               │          │
-              /api/games/**    │          │   /api/reviews/**
-                               ▼          ▼
-                    ┌────────────────┐  ┌────────────────┐
-                    │ catalog-service│◄─┤ review-service │
-                    │     :8081      │  │     :8082      │
-                    └───────┬────────┘  └───────┬────────┘
-                            │        Feign +    │
-                            │        Resilience4j
-                            ▼                   ▼
-                     ┌────────────┐      ┌────────────┐
-                     │ PostgreSQL │      │  MongoDB   │
-                     │ catalogdb  │      │ reviewsdb  │
-                     └────────────┘      └────────────┘
+                            ┌─────────────────────┐
+        navegador ─────────►│     api-gateway     │
+                            │       :8080         │
+                            └──┬───────┬───────┬──┘
+                     /         │       │       │   /api/reviews/**
+                               │       │  /api/games/**
+                               ▼       ▼       ▼
+                    ┌──────────┐  ┌────────────────┐  ┌────────────────┐
+                    │ web-app  │  │ catalog-service│◄─┤ review-service │
+                    │  :8083   │  │     :8081      │  │     :8082      │
+                    └──────────┘  └───────┬────────┘  └───────┬────────┘
+                                          │      Feign +      │
+                                          │      Resilience4j
+                                          ▼                   ▼
+                                   ┌────────────┐      ┌────────────┐
+                                   │ PostgreSQL │      │  MongoDB   │
+                                   │ catalogdb  │      │ reviewsdb  │
+                                   └────────────┘      └────────────┘
 
                     ┌─────────────────────────────────┐
                     │   discovery-server (Eureka)     │
@@ -62,6 +62,7 @@ Separar os dois permite escalar e evoluir cada um no seu ritmo, com o banco cert
 | api-gateway | Ponto único de entrada, roteamento | 8080 | - |
 | catalog-service | CRUD do catálogo de jogos | 8081 | PostgreSQL (`catalogdb`) |
 | review-service | Resenhas e notas dos jogos | 8082 | MongoDB (`reviewsdb`) |
+| web-app | Interface web (consome os dois serviços pelo gateway) | 8083 | - |
 
 Todas as portas e conexões são externalizáveis por variável de ambiente (`SERVER_PORT`, `EUREKA_URL`, `DB_URL`, `DB_USER`, `DB_PASSWORD`, `MONGO_URI`).
 
@@ -97,12 +98,13 @@ mvn clean package -DskipTests
 java -jar discovery-server/target/discovery-server-1.0.0.jar
 java -jar catalog-service/target/catalog-service-1.0.0.jar
 java -jar review-service/target/review-service-1.0.0.jar
+java -jar web-app/target/web-app-1.0.0.jar
 java -jar api-gateway/target/api-gateway-1.0.0.jar
 ```
 
 (ou `mvn spring-boot:run` dentro de cada pasta)
 
-4. Aguarde uns 30 segundos até todos aparecerem no Eureka e teste:
+4. Aguarde uns 30 segundos até todos aparecerem no Eureka e abra **http://localhost:8080** no navegador, ou teste a API direto:
 
 ```bash
 curl http://localhost:8080/api/games
@@ -126,10 +128,13 @@ Rotas configuradas (`api-gateway/src/main/resources/application.yml`):
 |---|---|
 | `/api/games/**` | `lb://catalog-service` |
 | `/api/reviews/**` | `lb://review-service` |
+| `/` | `lb://web-app` |
 
-## Mini frontend
+## Interface web (web-app)
 
-O gateway também serve uma página estática em **http://localhost:8080**: um mini frontend em HTML/JS puro pra ver os serviços conversando. Ele lista os jogos (catalog-service), mostra as resenhas com a nota média (review-service) e publica resenha nova. A página sai do próprio gateway, então as chamadas usam a mesma origem e passam pelo roteamento normal (sem CORS e sem expor porta interna).
+O `web-app` é um serviço separado (porta 8083) que serve a interface em HTML/JS puro. Ele também se registra no Eureka, e o gateway roteia a raiz `/` pra ele, então basta abrir **http://localhost:8080** no navegador.
+
+A página lista os jogos (catalog-service), mostra as resenhas com a nota média (review-service) e publica resenha nova. Como o navegador só conversa com o gateway na 8080, as chamadas da página são da mesma origem: nada de CORS e nada de expor porta interna pro cliente.
 
 Cada resenha aparece com um selo: "verificada" (o catálogo confirmou o jogo) ou "jogo não verificado" (a resenha foi criada enquanto o catalog-service estava fora do ar). Ou seja, dá pra ver o fallback funcionando direto na interface: derruba o catálogo, publica uma resenha e o selo amarelo aparece.
 

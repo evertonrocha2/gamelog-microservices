@@ -18,6 +18,7 @@ Por ser um trabalho individual, todos os papéis ficam comigo: Discovery Server,
 |---|---|---|
 | Everton da Rocha Silva | catalog-service | PostgreSQL |
 | Everton da Rocha Silva | review-service | MongoDB |
+| Everton da Rocha Silva | web-app | - |
 | Everton da Rocha Silva | discovery-server, api-gateway | - |
 
 ## 2. Tema e problema
@@ -43,24 +44,24 @@ Por ser um trabalho individual, todos os papéis ficam comigo: Discovery Server,
 ## 3. Arquitetura
 
 ```
-                         ┌─────────────────────┐
-        cliente ────────►│     api-gateway     │
-                         │       :8080         │
-                         └─────┬──────────┬────┘
-                               │          │
-              /api/games/**    │          │   /api/reviews/**
-                               ▼          ▼
-                    ┌────────────────┐  ┌────────────────┐
-                    │ catalog-service│◄─┤ review-service │
-                    │     :8081      │  │     :8082      │
-                    └───────┬────────┘  └───────┬────────┘
-                            │        Feign +    │
-                            │        Resilience4j
-                            ▼                   ▼
-                     ┌────────────┐      ┌────────────┐
-                     │ PostgreSQL │      │  MongoDB   │
-                     │ catalogdb  │      │ reviewsdb  │
-                     └────────────┘      └────────────┘
+                            ┌─────────────────────┐
+        navegador ─────────►│     api-gateway     │
+                            │       :8080         │
+                            └──┬───────┬───────┬──┘
+                     /         │       │       │   /api/reviews/**
+                               │       │  /api/games/**
+                               ▼       ▼       ▼
+                    ┌──────────┐  ┌────────────────┐  ┌────────────────┐
+                    │ web-app  │  │ catalog-service│◄─┤ review-service │
+                    │  :8083   │  │     :8081      │  │     :8082      │
+                    └──────────┘  └───────┬────────┘  └───────┬────────┘
+                                          │      Feign +      │
+                                          │      Resilience4j
+                                          ▼                   ▼
+                                   ┌────────────┐      ┌────────────┐
+                                   │ PostgreSQL │      │  MongoDB   │
+                                   │ catalogdb  │      │ reviewsdb  │
+                                   └────────────┘      └────────────┘
 
                     ┌─────────────────────────────────┐
                     │   discovery-server (Eureka)     │
@@ -69,6 +70,8 @@ Por ser um trabalho individual, todos os papéis ficam comigo: Discovery Server,
 ```
 
 Fluxo de uma requisição: o cliente chama o gateway (8080), o gateway consulta o Eureka pra achar a instância do serviço de destino e repassa a chamada. Quando o review-service precisa validar um jogo, ele chama o catalog-service pelo nome lógico (`catalog-service`), também resolvido pelo Eureka, com circuit breaker e fallback no caminho.
+
+A interface web segue o mesmo caminho: o navegador pede a raiz `/` ao gateway, que roteia pro `web-app`; a página carregada faz suas chamadas de API na mesma porta 8080, então o cliente nunca vê as portas internas e não existe configuração de CORS no projeto.
 
 **Como isso suporta escalabilidade:** nenhum componente referencia host/porta fixos de outro. Se eu subir três instâncias do review-service (em qualquer porta, `SERVER_PORT` é externalizado), todas se registram no Eureka e o gateway passa a balancear entre elas (`lb://review-service`) sem mudar uma linha de configuração. É o modelo de nuvem: instâncias vêm e vão, e a descoberta dinâmica + roteamento centralizado absorvem isso. Toda configuração sensível a ambiente (portas, URLs de banco, endereço do Eureka) sai por variável de ambiente, então o mesmo artefato roda local ou em nuvem.
 
@@ -80,6 +83,7 @@ Fluxo de uma requisição: o cliente chama o gateway (8080), o gateway consulta 
 | api-gateway | Ponto único de entrada, roteamento | 8080 | - | Cliente não conhece a topologia interna |
 | catalog-service | Cadastro e consulta do catálogo de jogos | 8081 | PostgreSQL (`catalogdb`) | Fonte da verdade dos jogos; dados estruturados e estáveis |
 | review-service | Resenhas, notas e resumo por jogo | 8082 | MongoDB (`reviewsdb`) | Conteúdo de usuário, flexível e de alto volume de escrita |
+| web-app | Interface web do sistema | 8083 | - | Camada de apresentação, sem estado próprio; evolui e escala separada do domínio |
 
 ### catalog-service
 
@@ -92,6 +96,13 @@ Fluxo de uma requisição: o cliente chama o gateway (8080), o gateway consulta 
 - **Documento principal:** `Review` (id, gameId, gameTitle, gameVerified, author, rating 1 a 5, text, pros[], cons[], platform, hoursPlayed, createdAt)
 - **Endpoints:** `GET/POST /api/reviews`, `GET/DELETE /api/reviews/{id}`, `GET /api/reviews/game/{gameId}`, `GET /api/reviews/game/{gameId}/summary`
 - Ao criar uma resenha, valida o jogo no catalog-service e copia o título (com resiliência, seção 8).
+
+### web-app
+
+- Interface em HTML e JavaScript puro, servida como conteúdo estático. Não tem banco nem estado: todo dado vem da API.
+- Lista os jogos, mostra as resenhas com a nota média e publica resenha nova, consumindo os dois serviços de domínio pelo gateway.
+- Cada resenha aparece com um selo de verificação, então o fallback da seção 8 fica visível na tela: resenha criada com o catálogo fora do ar mostra "jogo não verificado".
+- Está separado do gateway de propósito. O gateway cuida de roteamento e fronteira; misturar a interface nele daria dois motivos diferentes pra mexer no mesmo serviço. Separado, a interface pode ser reescrita ou escalada sem tocar no roteamento.
 
 ## 5. Bancos de dados e separação
 
@@ -132,10 +143,9 @@ Já o **catalog-service ficou no PostgreSQL** porque jogo é dado tabular cláss
 |---|---|
 | `/api/games/**` | `lb://catalog-service` |
 | `/api/reviews/**` | `lb://review-service` |
+| `/` | `lb://web-app` |
 
-O `lb://` integra o gateway ao Eureka com balanceamento de carga. O cliente só conhece a porta 8080.
-
-O gateway também serve um mini frontend estático em http://localhost:8080 (HTML/JS puro, sem serviço novo): lista os jogos, mostra resenhas com nota média e publica resenha nova, tudo consumindo a API pela própria porta do gateway. Cada resenha exibe um selo de verificação, então o fallback da seção 8 fica visível na interface quando o catálogo está fora do ar.
+O `lb://` integra o gateway ao Eureka com balanceamento de carga. O cliente só conhece a porta 8080: abrir http://localhost:8080 no navegador carrega a interface (roteada pro web-app) e as chamadas de API dessa página saem pelas mesmas rotas acima.
 
 ## 8. Resiliência entre microservices
 
@@ -163,7 +173,7 @@ Detalhe de implementação: o Feign usa `dismiss404`, então "jogo não existe" 
 
 As capturas de tela estão na pasta [print-evidencias](print-evidencias/):
 
-**1. Discovery Server com os três serviços registrados** (dashboard do Eureka em http://localhost:8761, todos UP com suas portas):
+**1. Discovery Server com os serviços registrados** (dashboard do Eureka em http://localhost:8761, todos UP com suas portas):
 
 ![Eureka com os servicos registrados](print-evidencias/01-eureka-servicos-registrados.png)
 
@@ -189,6 +199,7 @@ Saídas reais capturadas durante a execução local (as chamadas de API passam t
 REVIEW-SERVICE  -> :8082 [UP]
 API-GATEWAY     -> :8080 [UP]
 CATALOG-SERVICE -> :8081 [UP]
+WEB-APP         -> :8083 [UP]
 ```
 
 **Catálogo via gateway** (`GET http://localhost:8080/api/games`):
