@@ -1,75 +1,76 @@
-import { listarJogos, listarResenhas, resumoDoJogo, publicarResenha } from './api.js';
-import { cardDeJogo, cardDeResenha, textoDoResumo, aviso } from './render.js';
+// orchestration: reacts to events, calls the api and asks the ui to draw
 
-const tela = {
-  jogos: document.getElementById('lista-jogos'),
-  resenhas: document.getElementById('lista-resenhas'),
-  tituloResenhas: document.getElementById('titulo-resenhas'),
-  resumo: document.getElementById('resumo'),
-  formCard: document.getElementById('form-card'),
-  form: document.getElementById('form-resenha'),
-  msg: document.getElementById('msg')
-};
+import * as catalog from './api/catalog.js';
+import * as reviews from './api/reviews.js';
+import { elements, showPlaceholder, showMessage, clearMessage } from './ui/dom.js';
+import { gameCard, markSelected } from './ui/games-view.js';
+import { reviewCard, summaryText } from './ui/reviews-view.js';
 
-let jogoSelecionado = null;
+let selectedGame = null;
 
-async function carregarJogos() {
+async function loadGames() {
   try {
-    const jogos = await listarJogos();
-    tela.jogos.replaceChildren(...jogos.map(j => cardDeJogo(j, selecionarJogo)));
-  } catch (e) {
-    aviso(tela.jogos, 'catálogo indisponível no momento');
+    const games = await catalog.listGames();
+    elements.gameList.replaceChildren(...games.map(g => gameCard(g, selectGame)));
+  } catch (error) {
+    showPlaceholder(elements.gameList, 'catálogo indisponível no momento');
   }
 }
 
-function selecionarJogo(jogo, card) {
-  jogoSelecionado = jogo;
-  document.querySelectorAll('.game').forEach(c => c.classList.remove('ativo'));
-  card.classList.add('ativo');
-  tela.tituloResenhas.textContent = 'Resenhas de ' + jogo.title;
-  tela.formCard.hidden = false;
-  carregarResenhas();
+function selectGame(game, card) {
+  selectedGame = game;
+  markSelected(card);
+  elements.reviewsTitle.textContent = 'Resenhas de ' + game.title;
+  elements.formCard.hidden = false;
+  clearMessage();
+  loadReviews();
 }
 
-async function carregarResenhas() {
-  const [resenhas, resumo] = await Promise.all([
-    listarResenhas(jogoSelecionado.id),
-    resumoDoJogo(jogoSelecionado.id)
-  ]);
+async function loadReviews() {
+  try {
+    const [list, summary] = await Promise.all([
+      reviews.listByGame(selectedGame.id),
+      reviews.summaryByGame(selectedGame.id)
+    ]);
 
-  tela.resumo.textContent = textoDoResumo(resumo);
+    elements.summary.textContent = summaryText(summary);
 
-  if (resenhas.length === 0) {
-    aviso(tela.resenhas, 'nenhuma resenha ainda, seja o primeiro');
-    return;
+    if (list.length === 0) {
+      showPlaceholder(elements.reviewList, 'nenhuma resenha ainda, seja o primeiro');
+      return;
+    }
+    elements.reviewList.replaceChildren(...list.map(reviewCard));
+  } catch (error) {
+    elements.summary.textContent = '';
+    showPlaceholder(elements.reviewList, 'resenhas indisponíveis no momento');
   }
-  tela.resenhas.replaceChildren(...resenhas.map(cardDeResenha));
 }
 
-async function enviarResenha(evento) {
-  evento.preventDefault();
-  tela.msg.textContent = '';
+async function submitReview(event) {
+  event.preventDefault();
+  clearMessage();
 
   try {
-    const criada = await publicarResenha({
-      gameId: jogoSelecionado.id,
-      author: document.getElementById('autor').value,
-      rating: Number(document.getElementById('nota').value),
-      text: document.getElementById('texto').value
+    const created = await reviews.publish({
+      gameId: selectedGame.id,
+      author: elements.fields.author.value,
+      rating: Number(elements.fields.rating.value),
+      text: elements.fields.text.value
     });
 
-    tela.msg.className = 'msg sucesso';
-    // sem verificacao = o catalogo estava fora e o fallback assumiu
-    tela.msg.textContent = criada.gameVerified
-      ? 'resenha publicada!'
-      : 'resenha publicada, mas o catálogo está fora do ar (será verificada depois)';
-    tela.form.reset();
-    carregarResenhas();
-  } catch (erro) {
-    tela.msg.className = 'msg erro';
-    tela.msg.textContent = erro.message;
+    // not verified means the catalog was down and the fallback kicked in
+    showMessage(
+      created.gameVerified
+        ? 'resenha publicada!'
+        : 'resenha publicada, mas o catálogo está fora do ar (será verificada depois)',
+      'success'
+    );
+    elements.form.reset();
+    loadReviews();
+  } catch (error) {
+    showMessage(error.message, 'error');
   }
 }
 
-tela.form.addEventListener('submit', enviarResenha);
-carregarJogos();
+elements.form.addEventListener('submit', submitReview);
+loadGames();

@@ -1,0 +1,32 @@
+// element lookups in a single place: if an id changes in the html, fix it here
+
+export const elements = {
+  gameList: document.getElementById('game-list'),
+  reviewList: document.getElementById('review-list'),
+  reviewsTitle: document.getElementById('reviews-title'),
+  summary: document.getElementById('summary'),
+  formCard: document.getElementById('form-card'),
+  form: document.getElementById('review-form'),
+  message: document.getElementById('message'),
+  fields: {
+    author: document.getElementById('author'),
+    rating: document.getElementById('rating'),
+    text: document.getElementById('text')
+  }
+};
+
+export function showPlaceholder(container, text) {
+  const p = document.createElement('p');
+  p.className = 'empty';
+  p.textContent = text;
+  container.replaceChildren(p);
+}
+
+export function showMessage(text, kind) {
+  elements.message.className = 'message ' + kind;
+  elements.message.textContent = text;
+}
+
+export function clearMessage() {
+  elements.message.textContent = '';
+}
