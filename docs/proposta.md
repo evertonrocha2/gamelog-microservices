@@ -12,7 +12,7 @@
 | Responsável pela organização da entrega | Everton da Rocha Silva |
 | Repositório | https://github.com/evertonrocha2/gamelog-microservices |
 
-Por ser um trabalho individual, todos os papéis ficam comigo: Discovery Server, API Gateway, os dois microservices de domínio, os bancos de dados, a documentação e os testes de execução.
+Por ser um trabalho individual, todos os papéis ficam comigo: Discovery Server, API Gateway, os dois microservices de domínio, a interface web, os bancos de dados, a documentação e os testes de execução.
 
 | Integrante | Microservices sob responsabilidade | Banco |
 |---|---|---|
@@ -39,7 +39,7 @@ Por ser um trabalho individual, todos os papéis ficam comigo: Discovery Server,
 - Nota média e total de resenhas por jogo;
 - Acesso único via API Gateway.
 
-**Por que o tema combina com microservices:** o domínio tem duas cargas de trabalho muito diferentes. O catálogo é pequeno, estável e estruturado. As resenhas são conteúdo gerado por usuário: crescem rápido, têm estrutura flexível e concentram quase toda a escrita do sistema. São ciclos de vida, volumes e modelos de dados distintos, o que justifica serviços (e bancos) separados, cada um podendo escalar e evoluir sozinho. A divisão parou por aí de propósito: não criei serviço de usuário, notificação etc. nesta entrega porque ainda não há necessidade real, e fragmentar sem necessidade só adicionaria custo operacional (essa granularidade pode evoluir nas próximas entregas).
+**Por que o tema combina com microservices:** o domínio tem duas cargas de trabalho muito diferentes. O catálogo é pequeno, estável e estruturado. As resenhas são conteúdo gerado por usuário: crescem rápido, têm estrutura flexível e concentram quase toda a escrita do sistema. São ciclos de vida, volumes e modelos de dados distintos, o que justifica serviços (e bancos) separados, cada um podendo escalar e evoluir sozinho. A divisão parou por aí de propósito: só existe um terceiro serviço, o `web-app`, e ele existe porque apresentação é uma preocupação legitimamente diferente de domínio (não tem banco, não tem regra de negócio e pode ser reescrito sem tocar no resto). Já serviço de usuário, notificação e afins ficaram de fora nesta entrega porque ainda não há necessidade real, e fragmentar sem necessidade só adicionaria custo operacional (essa granularidade pode evoluir nas próximas entregas).
 
 ## 3. Arquitetura
 
