@@ -9,30 +9,30 @@
 <body>
   <header>
     <h1>GameLog</h1>
-    <p class="sub">catálogo e resenhas de jogos - tudo passando pelo API Gateway (porta 8080)</p>
+    <p class="subtitle">catálogo e resenhas de jogos - tudo passando pelo API Gateway (porta 8080)</p>
   </header>
 
-  <main class="wrap">
-    <section class="col">
+  <main class="columns">
+    <section class="column">
       <h2>Jogos</h2>
-      <p class="sub">catalog-service / PostgreSQL</p>
-      <div id="lista-jogos"><p class="vazio">carregando...</p></div>
+      <p class="subtitle">catalog-service / PostgreSQL</p>
+      <div id="game-list"><p class="empty">carregando...</p></div>
     </section>
 
-    <section class="col">
-      <h2 id="titulo-resenhas">Resenhas</h2>
-      <p class="sub">review-service / MongoDB</p>
-      <p id="resumo" class="resumo"></p>
-      <div id="lista-resenhas"><p class="vazio">selecione um jogo ao lado</p></div>
+    <section class="column">
+      <h2 id="reviews-title">Resenhas</h2>
+      <p class="subtitle">review-service / MongoDB</p>
+      <p id="summary" class="summary"></p>
+      <div id="review-list"><p class="empty">selecione um jogo ao lado</p></div>
 
       <div class="card" id="form-card" hidden>
         <h3>Nova resenha</h3>
-        <form id="form-resenha">
-          <label for="autor">Seu nome</label>
-          <input type="text" id="autor" required>
+        <form id="review-form">
+          <label for="author">Seu nome</label>
+          <input type="text" id="author" required>
 
-          <label for="nota">Nota</label>
-          <select id="nota">
+          <label for="rating">Nota</label>
+          <select id="rating">
             <option value="5">5 - Obra prima</option>
             <option value="4">4 - Muito bom</option>
             <option value="3" selected>3 - Ok</option>
@@ -40,11 +40,11 @@
             <option value="1">1 - Ruim</option>
           </select>
 
-          <label for="texto">Resenha</label>
-          <textarea id="texto" required></textarea>
+          <label for="text">Resenha</label>
+          <textarea id="text" required></textarea>
 
           <button type="submit">Publicar</button>
-          <p id="msg" class="msg"></p>
+          <p id="message" class="message"></p>
         </form>
       </div>
     </section>
