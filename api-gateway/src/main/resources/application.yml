@@ -16,11 +16,11 @@ spring:
           uri: lb://review-service
           predicates:
             - Path=/api/reviews/**
-        # o que nao for /api cai na interface web
+        # pagina e assets da interface web
         - id: web-app
           uri: lb://web-app
           predicates:
-            - Path=/,/index.html,/favicon.ico
+            - Path=/,/index.html,/favicon.ico,/css/**,/js/**
 
 eureka:
   client:
