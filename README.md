@@ -136,6 +136,18 @@ O `web-app` é um serviço separado (porta 8083) que serve a interface em HTML/J
 
 A página lista os jogos (catalog-service), mostra as resenhas com a nota média (review-service) e publica resenha nova. Como o navegador só conversa com o gateway na 8080, as chamadas da página são da mesma origem: nada de CORS e nada de expor porta interna pro cliente.
 
+Os arquivos ficam em `web-app/src/main/resources/static`:
+
+```
+index.html        estrutura da página
+css/style.css     estilos
+js/api.js         chamadas HTTP para a API
+js/render.js      monta os elementos da tela
+js/app.js         estado, eventos e ligação entre os dois
+```
+
+É JavaScript puro com ES modules, sem framework nem etapa de build: subiu o serviço, a interface está pronta.
+
 Cada resenha aparece com um selo: "verificada" (o catálogo confirmou o jogo) ou "jogo não verificado" (a resenha foi criada enquanto o catalog-service estava fora do ar). Ou seja, dá pra ver o fallback funcionando direto na interface: derruba o catálogo, publica uma resenha e o selo amarelo aparece.
 
 ## Endpoints
