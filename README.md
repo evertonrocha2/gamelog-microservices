@@ -139,12 +139,18 @@ A página lista os jogos (catalog-service), mostra as resenhas com a nota média
 Os arquivos ficam em `web-app/src/main/resources/static`:
 
 ```
-index.html        estrutura da página
-css/style.css     estilos
-js/api.js         chamadas HTTP para a API
-js/render.js      monta os elementos da tela
-js/app.js         estado, eventos e ligação entre os dois
+index.html               estrutura da página
+css/style.css            estilos
+js/api/http.js           fetch, status e mensagem de erro num só lugar
+js/api/catalog.js        cliente do catalog-service
+js/api/reviews.js        cliente do review-service
+js/ui/dom.js             referências dos elementos e mensagens de tela
+js/ui/games-view.js      monta o card de jogo
+js/ui/reviews-view.js    monta o card de resenha e o selo
+js/app.js                estado, eventos e ligação entre api e ui
 ```
+
+A camada de API tem um cliente por microservice, espelhando o backend: `catalog.js` e `reviews.js` só descrevem seus endpoints, e o `http.js` cuida do transporte. Assim, mudar tratamento de erro é um arquivo, e adicionar um serviço novo é um cliente novo.
 
 É JavaScript puro com ES modules, sem framework nem etapa de build: subiu o serviço, a interface está pronta.
 

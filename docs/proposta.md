@@ -100,7 +100,7 @@ A interface web segue o mesmo caminho: o navegador pede a raiz `/` ao gateway, q
 ### web-app
 
 - Interface em HTML e JavaScript puro (ES modules, sem framework nem build), servida como conteúdo estático. Não tem banco nem estado próprio: todo dado vem da API.
-- Organizada em `index.html`, `css/style.css` e três módulos JS separados por responsabilidade: `api.js` (chamadas HTTP), `render.js` (montagem dos elementos) e `app.js` (estado e eventos).
+- Organizada em `index.html`, `css/style.css` e módulos JS separados por responsabilidade: `api/` (um cliente HTTP por microservice, espelhando o backend), `ui/` (montagem dos elementos da tela) e `app.js` (estado e eventos).
 - Lista os jogos, mostra as resenhas com a nota média e publica resenha nova, consumindo os dois serviços de domínio pelo gateway.
 - Cada resenha aparece com um selo de verificação, então o fallback da seção 8 fica visível na tela: resenha criada com o catálogo fora do ar mostra "jogo não verificado".
 - Está separado do gateway de propósito. O gateway cuida de roteamento e fronteira; misturar a interface nele daria dois motivos diferentes pra mexer no mesmo serviço. Separado, a interface pode ser reescrita ou escalada sem tocar no roteamento.
