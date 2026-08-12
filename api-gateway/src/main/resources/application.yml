@@ -7,7 +7,7 @@ spring:
   cloud:
     gateway:
       routes:
-        # lb:// resolve o nome do servico via eureka
+        # lb:// resolves the service name through eureka
         - id: catalog-service
           uri: lb://catalog-service
           predicates:
@@ -16,7 +16,7 @@ spring:
           uri: lb://review-service
           predicates:
             - Path=/api/reviews/**
-        # pagina e assets da interface web
+        # web interface page and its assets
         - id: web-app
           uri: lb://web-app
           predicates:

@@ -4,7 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-// dismiss404: jogo inexistente nao pode contar como falha e abrir o circuito
+// dismiss404: a missing game must not count as a failure and trip the circuit
 @FeignClient(name = "catalog-service", fallback = CatalogClientFallback.class, dismiss404 = true)
 public interface CatalogClient {
 

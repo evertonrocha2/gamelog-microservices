@@ -13,7 +13,7 @@ public class Review {
 
     private Long gameId;
 
-    // copiado do catalogo no cadastro; fica nulo se o catalogo estiver fora
+    // copied from the catalog on creation; stays null if the catalog is down
     private String gameTitle;
     private boolean gameVerified;
 

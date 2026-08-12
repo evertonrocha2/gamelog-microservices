@@ -15,7 +15,7 @@
     <artifactId>web-app</artifactId>
     <version>1.0.0</version>
     <name>web-app</name>
-    <description>Interface web do GameLog</description>
+    <description>GameLog web interface</description>
 
     <properties>
         <java.version>21</java.version>

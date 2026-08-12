@@ -16,7 +16,7 @@ spring:
       client:
         config:
           default:
-            # falhar rapido e deixar o fallback assumir
+            # fail fast and let the fallback take over
             connectTimeout: 2000
             readTimeout: 2000
 

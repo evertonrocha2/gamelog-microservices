@@ -10,9 +10,9 @@
     <packaging>pom</packaging>
 
     <name>GameLog</name>
-    <description>Plataforma de catalogo e resenhas de jogos - TP1 de Microservices</description>
+    <description>Game catalog and reviews platform - Microservices TP1</description>
 
-    <!-- agregador, so pra buildar tudo de uma vez -->
+    <!-- aggregator, just to build everything in one go -->
     <modules>
         <module>discovery-server</module>
         <module>api-gateway</module>

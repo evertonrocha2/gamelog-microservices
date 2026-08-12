@@ -44,7 +44,7 @@ public class GameService {
     }
 
     public void delete(Long id) {
-        // busca antes pra devolver 404 se o id nao existir
+        // load first so a missing id returns 404 instead of failing silently
         Game game = findById(id);
         repository.delete(game);
     }

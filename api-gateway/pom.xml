@@ -15,7 +15,7 @@
     <artifactId>api-gateway</artifactId>
     <version>1.0.0</version>
     <name>api-gateway</name>
-    <description>API Gateway - ponto unico de entrada da aplicacao</description>
+    <description>API Gateway - single entry point of the application</description>
 
     <properties>
         <java.version>21</java.version>

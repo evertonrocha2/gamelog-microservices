@@ -6,7 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-// carga inicial pra nao comecar com o catalogo vazio
+// initial data so the catalog does not start empty
 @Configuration
 public class DataSeeder {
 
