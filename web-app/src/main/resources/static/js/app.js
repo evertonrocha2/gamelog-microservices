@@ -15,6 +15,7 @@ async function loadGames() {
       showPlaceholder(elements.gameList, 'O catálogo está vazio.');
       return;
     }
+    elements.gameCount.textContent = games.length;
     elements.gameList.replaceChildren(...games.map(g => gameCard(g, selectGame)));
   } catch (error) {
     showPlaceholder(elements.gameList, 'O catálogo não respondeu. Confira se o catalog-service está no ar.');
