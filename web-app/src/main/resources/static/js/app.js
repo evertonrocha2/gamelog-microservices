@@ -47,7 +47,9 @@ async function loadReviews() {
       showPlaceholder(elements.reviewList, 'Nenhuma resenha ainda. Escreva a primeira.');
       return;
     }
-    elements.reviewList.replaceChildren(...list.map(reviewCard));
+    // newest first, so a review someone just wrote shows up at the top
+    const newestFirst = [...list].sort((a, b) => (b.createdAt ?? '').localeCompare(a.createdAt ?? ''));
+    elements.reviewList.replaceChildren(...newestFirst.map(reviewCard));
   } catch (error) {
     fillSummary(elements.summary, { totalReviews: 0 });
     showPlaceholder(elements.reviewList, 'As resenhas não carregaram. Confira se o review-service está no ar.');
