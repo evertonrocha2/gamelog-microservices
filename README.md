@@ -140,7 +140,9 @@ Os arquivos ficam em `web-app/src/main/resources/static`:
 
 ```
 index.html               estrutura da página
+favicon.svg              ícone da aba
 css/style.css            estilos
+fonts/                   a fonte Inter, embutida para funcionar offline
 js/api/http.js           fetch, status e mensagem de erro num só lugar
 js/api/catalog.js        cliente do catalog-service
 js/api/reviews.js        cliente do review-service
