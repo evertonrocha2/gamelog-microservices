@@ -8,6 +8,7 @@ export const elements = {
   composer: document.getElementById('composer'),
   form: document.getElementById('review-form'),
   message: document.getElementById('message'),
+  submit: document.querySelector('#review-form button[type="submit"]'),
   fields: {
     author: document.getElementById('author'),
     rating: document.getElementById('rating'),
