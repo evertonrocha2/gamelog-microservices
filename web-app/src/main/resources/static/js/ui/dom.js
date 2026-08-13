@@ -22,6 +22,10 @@ export function showPlaceholder(container, text) {
   container.replaceChildren(p);
 }
 
+export function setBusy(container, busy) {
+  container.setAttribute('aria-busy', busy ? 'true' : 'false');
+}
+
 export function showMessage(text, kind) {
   elements.message.className = 'message ' + kind;
   elements.message.textContent = text;
