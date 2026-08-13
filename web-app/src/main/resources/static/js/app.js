@@ -28,6 +28,8 @@ function selectGame(game, card) {
   elements.reviewsFor.hidden = false;
   elements.composer.hidden = false;
   clearMessage();
+  // drop the previous game's reviews right away instead of leaving them on screen
+  showPlaceholder(elements.reviewList, 'Carregando resenhas…');
   loadReviews();
 }
 
