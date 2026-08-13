@@ -4,6 +4,12 @@ server:
 spring:
   application:
     name: web-app
+  web:
+    resources:
+      cache:
+        # the page and its assets are static, no need to fetch them on every load
+        cachecontrol:
+          max-age: 1h
 
 eureka:
   client:
