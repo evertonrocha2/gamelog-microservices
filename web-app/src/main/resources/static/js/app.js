@@ -65,7 +65,7 @@ async function submitReview(event) {
   try {
     const created = await reviews.publish({
       gameId: selectedGame.id,
-      author: elements.fields.author.value,
+      author: elements.fields.author.value.trim(),
       rating: Number(elements.fields.rating.value),
       text: elements.fields.text.value
     });
