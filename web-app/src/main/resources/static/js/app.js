@@ -4,24 +4,29 @@ import * as catalog from './api/catalog.js';
 import * as reviews from './api/reviews.js';
 import { elements, showPlaceholder, showMessage, clearMessage } from './ui/dom.js';
 import { gameCard, markSelected } from './ui/games-view.js';
-import { reviewCard, summaryText } from './ui/reviews-view.js';
+import { reviewCard, fillSummary } from './ui/reviews-view.js';
 
 let selectedGame = null;
 
 async function loadGames() {
   try {
     const games = await catalog.listGames();
+    if (games.length === 0) {
+      showPlaceholder(elements.gameList, 'O catálogo está vazio.');
+      return;
+    }
     elements.gameList.replaceChildren(...games.map(g => gameCard(g, selectGame)));
   } catch (error) {
-    showPlaceholder(elements.gameList, 'catálogo indisponível no momento');
+    showPlaceholder(elements.gameList, 'O catálogo não respondeu. Confira se o catalog-service está no ar.');
   }
 }
 
 function selectGame(game, card) {
   selectedGame = game;
   markSelected(card);
-  elements.reviewsTitle.textContent = 'Resenhas de ' + game.title;
-  elements.formCard.hidden = false;
+  elements.reviewsFor.textContent = game.title;
+  elements.reviewsFor.hidden = false;
+  elements.composer.hidden = false;
   clearMessage();
   loadReviews();
 }
@@ -33,16 +38,16 @@ async function loadReviews() {
       reviews.summaryByGame(selectedGame.id)
     ]);
 
-    elements.summary.textContent = summaryText(summary);
+    fillSummary(elements.summary, summary);
 
     if (list.length === 0) {
-      showPlaceholder(elements.reviewList, 'nenhuma resenha ainda, seja o primeiro');
+      showPlaceholder(elements.reviewList, 'Nenhuma resenha ainda. Escreva a primeira.');
       return;
     }
     elements.reviewList.replaceChildren(...list.map(reviewCard));
   } catch (error) {
-    elements.summary.textContent = '';
-    showPlaceholder(elements.reviewList, 'resenhas indisponíveis no momento');
+    fillSummary(elements.summary, { totalReviews: 0 });
+    showPlaceholder(elements.reviewList, 'As resenhas não carregaram. Confira se o review-service está no ar.');
   }
 }
 
@@ -61,8 +66,8 @@ async function submitReview(event) {
     // not verified means the catalog was down and the fallback kicked in
     showMessage(
       created.gameVerified
-        ? 'resenha publicada!'
-        : 'resenha publicada, mas o catálogo está fora do ar (será verificada depois)',
+        ? 'Resenha publicada.'
+        : 'Resenha publicada. O catálogo está fora do ar, então o jogo ainda não foi verificado.',
       'success'
     );
     elements.form.reset();

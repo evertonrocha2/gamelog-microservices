@@ -3,9 +3,9 @@
 export const elements = {
   gameList: document.getElementById('game-list'),
   reviewList: document.getElementById('review-list'),
-  reviewsTitle: document.getElementById('reviews-title'),
+  reviewsFor: document.getElementById('reviews-for'),
   summary: document.getElementById('summary'),
-  formCard: document.getElementById('form-card'),
+  composer: document.getElementById('composer'),
   form: document.getElementById('review-form'),
   message: document.getElementById('message'),
   fields: {
