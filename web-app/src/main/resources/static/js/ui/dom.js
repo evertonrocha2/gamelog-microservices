@@ -2,6 +2,7 @@
 
 export const elements = {
   gameList: document.getElementById('game-list'),
+  gameCount: document.getElementById('game-count'),
   reviewList: document.getElementById('review-list'),
   reviewsFor: document.getElementById('reviews-for'),
   summary: document.getElementById('summary'),
