@@ -20,7 +20,7 @@ spring:
         - id: web-app
           uri: lb://web-app
           predicates:
-            - Path=/,/index.html,/favicon.ico,/css/**,/js/**
+            - Path=/,/index.html,/favicon.ico,/css/**,/js/**,/fonts/**
 
 eureka:
   client:
