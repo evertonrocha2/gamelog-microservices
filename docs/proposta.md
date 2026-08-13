@@ -174,7 +174,7 @@ Detalhe de implementação: o Feign usa `dismiss404`, então "jogo não existe" 
 
 As capturas de tela estão na pasta [print-evidencias](print-evidencias/):
 
-**1. Discovery Server com os serviços registrados** (dashboard do Eureka em http://localhost:8761, todos UP com suas portas):
+**1. Discovery Server com os quatro serviços registrados** (dashboard do Eureka em http://localhost:8761: api-gateway, catalog-service, review-service e web-app, todos UP com suas portas):
 
 ![Eureka com os servicos registrados](print-evidencias/01-eureka-servicos-registrados.png)
 
@@ -189,6 +189,10 @@ As capturas de tela estão na pasta [print-evidencias](print-evidencias/):
 **4. Resiliência em ação** (mesma chamada com o catalog-service derrubado: a resenha é aceita com `gameVerified: false`. Repare no tempo de resposta de 2.02s, que é o timeout de 2s do Feign esgotando antes do fallback assumir, contra 324ms da chamada anterior):
 
 ![Fallback com o catalogo fora do ar](print-evidencias/04-fallback-catalogo-fora.png)
+
+**5. Interface web consumindo os dois serviços** (http://localhost:8080, servida pelo web-app através do gateway): à esquerda os jogos do catalog-service, à direita as resenhas e a nota média do review-service. Os dois selos aparecem juntos: as duas primeiras resenhas foram criadas com o catálogo fora do ar (fallback, selo amarelo) e a terceira com o catálogo no ar (selo verde).
+
+![Interface web do GameLog](print-evidencias/05-interface-web.png)
 
 ### Saídas de terminal
 
