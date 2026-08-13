@@ -60,6 +60,8 @@ async function submitReview(event) {
   event.preventDefault();
   clearMessage();
 
+  // a slow catalog makes the post take a couple of seconds, so block a second click
+  elements.submit.disabled = true;
   try {
     const created = await reviews.publish({
       gameId: selectedGame.id,
@@ -79,6 +81,8 @@ async function submitReview(event) {
     loadReviews();
   } catch (error) {
     showMessage(error.message, 'error');
+  } finally {
+    elements.submit.disabled = false;
   }
 }
 
