@@ -2,7 +2,7 @@
 
 import * as catalog from './api/catalog.js';
 import * as reviews from './api/reviews.js';
-import { elements, showPlaceholder, showMessage, clearMessage } from './ui/dom.js';
+import { elements, showPlaceholder, showMessage, clearMessage, setBusy } from './ui/dom.js';
 import { gameCard, markSelected } from './ui/games-view.js';
 import { reviewCard, fillSummary } from './ui/reviews-view.js';
 
@@ -32,6 +32,7 @@ function selectGame(game, card) {
 }
 
 async function loadReviews() {
+  setBusy(elements.reviewList, true);
   try {
     const [list, summary] = await Promise.all([
       reviews.listByGame(selectedGame.id),
@@ -48,6 +49,8 @@ async function loadReviews() {
   } catch (error) {
     fillSummary(elements.summary, { totalReviews: 0 });
     showPlaceholder(elements.reviewList, 'As resenhas não carregaram. Confira se o review-service está no ar.');
+  } finally {
+    setBusy(elements.reviewList, false);
   }
 }
 
