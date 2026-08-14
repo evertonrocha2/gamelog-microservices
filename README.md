@@ -112,7 +112,7 @@ curl http://localhost:8080/api/games
 
 O catalog-service já sobe com 4 jogos de exemplo.
 
-> Se a porta 8081 ou 8082 estiver ocupada na sua máquina, rode com `SERVER_PORT` diferente. O gateway acha o serviço pelo Eureka, então a porta interna não importa.
+> Se alguma das portas internas (8081, 8082, 8083) estiver ocupada na sua máquina, suba o serviço em outra: `SERVER_PORT=9081 java -jar catalog-service/target/catalog-service-1.0.0.jar`. O gateway encontra o serviço pelo Eureka, então a porta interna não importa.
 
 ## Discovery Server
 
