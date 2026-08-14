@@ -104,7 +104,7 @@ java -jar api-gateway/target/api-gateway-1.0.0.jar
 
 (ou `mvn spring-boot:run` dentro de cada pasta)
 
-4. Aguarde uns 30 segundos até todos aparecerem no Eureka e abra **http://localhost:8080** no navegador, ou teste a API direto:
+4. Aguarde cerca de um minuto até todos aparecerem no Eureka (o registro e a primeira sincronização levam alguns ciclos de 30s) e abra **http://localhost:8080** no navegador, ou teste a API direto:
 
 ```bash
 curl http://localhost:8080/api/games
