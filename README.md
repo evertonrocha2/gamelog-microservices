@@ -76,7 +76,7 @@ Todas as portas e conexões são externalizáveis por variável de ambiente (`SE
 
 ## Como executar
 
-Pré-requisitos: JDK 21, Maven 3.9+ e Docker.
+Pré-requisitos: JDK 21, Maven 3.9+ e Docker (com o Docker Desktop já aberto, senão o passo 1 falha ao conectar no daemon).
 
 1. Suba os bancos:
 
