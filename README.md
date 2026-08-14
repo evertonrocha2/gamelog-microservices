@@ -117,7 +117,7 @@ O catalog-service já sobe com 4 jogos de exemplo.
 ## Discovery Server
 
 - Dashboard: http://localhost:8761
-- Os serviços `API-GATEWAY`, `CATALOG-SERVICE` e `REVIEW-SERVICE` aparecem registrados na seção "Instances currently registered with Eureka".
+- Os serviços `API-GATEWAY`, `CATALOG-SERVICE`, `REVIEW-SERVICE` e `WEB-APP` aparecem registrados na seção "Instances currently registered with Eureka".
 - Listagem via API: `curl -H "Accept: application/json" http://localhost:8761/eureka/apps`
 
 ## API Gateway
